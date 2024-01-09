@@ -1,1 +1,0 @@
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File "\\ON-123R-TS-01\ActPrcSjekk$\ActPrcSjekk.ps1"
