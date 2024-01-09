@@ -1,5 +1,6 @@
-﻿set-location 'C:\Program Files (x86)\Vitari\ActPrcSjekk'
-$file = ".\pw.txt"
+# script for setting encrypted password for sql user
+Set-Location 'E:\data\GIT\ActPrcSjekk'
+$file = '.\pw.txt'
+$user = 'sa'
 (Get-Credential).Password | ConvertFrom-SecureString | Out-File pw.txt
-$user = "sa"
-$mycredential = New-Object -TypeName System.Management.Automation.pscredential -ArgumentList $User,(Get-Content $file | ConvertTo-SecureString)
+$mycredential = New-Object -TypeName System.Management.Automation.pscredential -ArgumentList $User, (Get-Content $file | ConvertTo-SecureString)
