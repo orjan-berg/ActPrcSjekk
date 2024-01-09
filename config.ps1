@@ -1,1 +1,2 @@
-﻿(Get-Credential).Password | ConvertFrom-SecureString | Out-File "C:\Program Files (x86)\Vitari\ActPrcSjekk\config.dat"
+﻿$outfile = 'C:\Program Files (x86)\Vitari\ActPrcSjekk\config.dat'
+(Get-Credential).Password | ConvertFrom-SecureString | Out-File $outfile
