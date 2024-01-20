@@ -1,4 +1,5 @@
-﻿function Load-Module ($n) {
+﻿# used to store encrypted password for the sql-user used to connect to the sql-server
+function Load-Module ($n) {
     if (Get-Module | Where-Object { $_.name -eq $n }) {
         Write-Host "Module $n is already imported."
     } else {
