@@ -48,27 +48,37 @@ $rowCount = (Get-DbaDbTable -SqlInstance $server -Database $database -Table $tab
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - dataspace and rowcount collected"
 
-if ($dataSpace / $rowCount -gt 3072) {
-        # Truncate tabellen
-        Invoke-DbaQuery -SqlInstance $server -Database $database -Query "TRUNCATE TABLE $table" -ErrorAction Stop
-        # Send mail
-        $to = 'orjan.berg@exsitec.no'
-        $from = 'noreply@bbnett.no'
-        $subject = "Test: $table har vokst for mye"
-        $body = "Størrelsen på tabellen $table oversteg verdien 3 megabyte per rad.  
-        Rutinene for å redusere tabellen er kjørt."
-        # Send-MailMessage er ikke anbefalt brukt, men jeg har ikke funnet noe annet alternativ enda
-        Send-MailMessage -To $to -From $from -Subject $subject -Body $body -SmtpServer $smtpServer
+try {
+        $result = $dataSpace / $rowCount
+} catch [System.DivideByZeroException] {
+        <#Do this if a terminating exception happens#>
+        $result = 0  
+} finally {
+        <#Do this after the try block regardless of whether an exception occurred or not#>
+        if ($result -gt 3072) {
+                # Truncate tabellen
+                Invoke-DbaQuery -SqlInstance $server -Database $database -Query "TRUNCATE TABLE $table" -ErrorAction Stop
+                # Send mail
+                $to = 'orjan.berg@exsitec.no'
+                $from = 'noreply@bbnett.no'
+                $subject = "Test: $table har vokst for mye"
+                $body = "Størrelsen på tabellen $table oversteg verdien 3 megabyte per rad.  
+                Rutinene for å redusere tabellen er kjørt."
+                # Send-MailMessage er ikke anbefalt brukt, men jeg har ikke funnet noe annet alternativ enda
+                Send-MailMessage -To $to -From $from -Subject $subject -Body $body -SmtpServer $smtpServer -Encoding utf8
+                $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
+                Log-Message "$($TimeStamp) - Mail sent"
+        
+        } else {
+                $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
+                Log-Message "$($TimeStamp) - Dataspace normal, no mail sent"
+        }
+        
+        Disconnect-DbaInstance
         $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
-        Log-Message "$($TimeStamp) - Mail sent"
+        Log-Message "$($TimeStamp) - Disconnected from $($server)"
 
-} else {
-        $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
-        Log-Message "$($TimeStamp) - Dataspace normal, no mail sent"
 }
 
-Disconnect-DbaInstance
-$TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
-Log-Message "$($TimeStamp) - Disconnected from $($server)"
 
 
