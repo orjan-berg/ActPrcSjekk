@@ -2,24 +2,36 @@
 
 # Import-Module dbatools
 
-$today = Get-Date
+
+Function Log-Message([String]$Message) {
+        Add-Content -Path '.\Log.txt' $Message
+}
 
 # Div variabler
-
-$server = 'ON-SQL-04\ENTOTRE'
+$module = Get-Module -Name dbatools
+$today = Get-Date
+$server = 'byraa18.local'
 
 $database = 'vbsys'
 
 $table = 'ActPrc'
-$file = 'C:\Program Files (x86)\Vitari\ActPrcSjekk\config.dat'
+$file = 'E:\Data\GIT\ActPrcSjekk\config.dat'
 $user = 'sa'
 $mycredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, (Get-Content $file | ConvertTo-SecureString)
 
 
-$smtpServer = 'mx01.minedata.no'
+$smtpServer = 'smtp.bbnett.no'
 
 
 Write-Host "Running today $today"
+
+# checking if dbatools is available, if not import module
+if ($module) {
+        Write-Host "Module $($module.Name) - version $($module.Version) installed" -ForegroundColor Yellow
+} else {
+        Import-Module -Name dbatools
+        Write-Host 'Module dbatools imported' -ForegroundColor Yellow
+}
 
 
 # remove -SqlCredential to use windows authentication
@@ -38,7 +50,7 @@ $rowCount = (Get-DbaDbTable -SqlInstance $server -Database $database -Table $tab
 
 
 
-if ($dataSpace / $rowCount -gt 30) {
+if ($dataSpace / $rowCount -gt 3072) {
 
         # Truncate tabellen
 
@@ -48,13 +60,13 @@ if ($dataSpace / $rowCount -gt 30) {
 
         $to = 'orjan.berg@exsitec.no'
 
-        $from = 'post@123regnskap.no'
+        $from = 'noreply@bbnett.no'
 
-        $subject = "$table har vokst for mye"
+        $subject = "Test: $table har vokst for mye"
 
-        $body = "St�rrelsen p� tabellen $table oversteg verdien 3 megabyte per rad.  
+        $body = "Størrelsen på tabellen $table oversteg verdien 3 megabyte per rad.  
 
-        Rutinene for � redusere tabellen er kj�rt."
+        Rutinene for å redusere tabellen er kjørt."
 
         # Send-MailMessage er ikke anbefalt brukt, men jeg har ikke funnet noe annet alternativ enda
 
