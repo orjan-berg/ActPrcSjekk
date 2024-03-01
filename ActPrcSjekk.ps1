@@ -35,7 +35,7 @@ if ($module) {
 # remove -SqlCredential to use windows authentication
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - Connecting to $($server)"
-# $svr = Connect-DbaInstance -SqlInstance $server -SqlCredential $mycredential
+$svr = Connect-DbaInstance -SqlInstance $server -SqlCredential $mycredential
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - Connected to $($server)"
 
