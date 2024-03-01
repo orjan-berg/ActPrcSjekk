@@ -49,7 +49,8 @@ $rowCount = $svr.databases[$database].Tables[$table].RowCount
 #$rowCount = (Get-DbaDbTable -SqlInstance $server -Database $database -Table $table).RowCount
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - dataspace and rowcount collected"
-
+Log-Message "$($TimeStamp) - DataSpaceUsed: $($dataSpace)"
+Log-Message "$($TimeStamp) - RowCount: $($rowCount)"
 try {
         $result = $dataSpace / $rowCount
 } catch [System.DivideByZeroException] {
