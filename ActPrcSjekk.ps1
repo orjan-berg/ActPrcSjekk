@@ -4,8 +4,8 @@ Function Log-Message([String]$Message) {
 
 # Div variabler
 $module = Get-Module -Name dbatools
-$today = Get-Date
-$server = 'byraa18.local'
+
+$server = '192.168.50.43'
 
 $database = 'vbsys'
 
@@ -35,7 +35,7 @@ if ($module) {
 # remove -SqlCredential to use windows authentication
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - Connecting to $($server)"
-Connect-DbaInstance -SqlInstance $server -SqlCredential $mycredential
+# $svr = Connect-DbaInstance -SqlInstance $server -SqlCredential $mycredential
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - Connected to $($server)"
 
@@ -43,8 +43,10 @@ Log-Message "$($TimeStamp) - Connected to $($server)"
 # Finner informasjon om tabellen
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - Getting dataspace and rowcount"
-$dataSpace = (Get-DbaDbTable -SqlInstance $server -Database $database -Table $table).DataSpaceUsed
-$rowCount = (Get-DbaDbTable -SqlInstance $server -Database $database -Table $table).RowCount
+$dataSpace = $svr.databases[$database].Tables[$table].DataSpaceUsed
+$rowCount = $svr.databases[$database].Tables[$table].RowCount
+#$dataSpace = (Get-DbaDbTable -SqlInstance $server -Database $database -Table $table).DataSpaceUsed
+#$rowCount = (Get-DbaDbTable -SqlInstance $server -Database $database -Table $table).RowCount
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - dataspace and rowcount collected"
 
@@ -57,7 +59,7 @@ try {
         <#Do this after the try block regardless of whether an exception occurred or not#>
         if ($result -gt 3072) {
                 # Truncate tabellen
-                Invoke-DbaQuery -SqlInstance $server -Database $database -Query "TRUNCATE TABLE $table" -ErrorAction Stop
+                Invoke-DbaQuery -SqlInstance $server -SqlCredential $mycredential -Database $database -Query "TRUNCATE TABLE $table" -ErrorAction Stop
                 # Send mail
                 $to = 'orjan.berg@exsitec.no'
                 $from = 'noreply@bbnett.no'

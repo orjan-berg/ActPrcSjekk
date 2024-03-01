@@ -1,0 +1,17 @@
+19.02.2024 09:57:31 - Starting 
+19.02.2024 09:57:32 - Connecting to byraa18.local
+19.02.2024 09:57:46 - Connected to byraa18.local
+19.02.2024 09:57:46 - Getting dataspace and rowcount
+19.02.2024 09:57:46 - dataspace and rowcount collected
+19.02.2024 09:57:46 - Dataspace normal, no mail sent
+19.02.2024 09:57:46 - Disconnected from byraa18.local
+19.02.2024 10:12:06 - Starting 
+19.02.2024 10:12:50 - Connecting to byraa18.local
+19.02.2024 10:12:50 - Connected to byraa18.local
+19.02.2024 10:13:27 - Getting dataspace and rowcount
+19.02.2024 10:13:27 - dataspace and rowcount collected
+19.02.2024 10:20:54 - Getting dataspace and rowcount
+19.02.2024 10:20:54 - dataspace and rowcount collected
+19.02.2024 10:21:06 - Connecting to byraa18.local
+19.02.2024 10:21:06 - Connected to byraa18.local
+19.02.2024 10:21:13 - Getting dataspace and rowcount
