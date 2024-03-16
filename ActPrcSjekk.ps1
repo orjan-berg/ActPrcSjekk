@@ -2,20 +2,18 @@ Function Log-Message([String]$Message) {
         Add-Content -Path '.\Log.txt' $Message
 }
 
-# Div variabler
+# Read configuration
+$config = Get-Content .\config.json | ConvertFrom-Json
+
+# Misc variables
 $module = Get-Module -Name dbatools
-
-$server = '192.168.50.43'
-
+$server = $config.server
 $database = 'vbsys'
-
 $table = 'ActPrc'
 $file = 'E:\Data\GIT\ActPrcSjekk\config.dat'
-$user = 'sa'
+$user = $config.SqlUser
 $mycredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, (Get-Content $file | ConvertTo-SecureString)
-
-
-$smtpServer = 'smtp.bbnett.no'
+$smtpServer = $config.SmtpServer
 
 
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
@@ -45,8 +43,6 @@ $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - Getting dataspace and rowcount"
 $dataSpace = $svr.databases[$database].Tables[$table].DataSpaceUsed
 $rowCount = $svr.databases[$database].Tables[$table].RowCount
-#$dataSpace = (Get-DbaDbTable -SqlInstance $server -Database $database -Table $table).DataSpaceUsed
-#$rowCount = (Get-DbaDbTable -SqlInstance $server -Database $database -Table $table).RowCount
 $TimeStamp = (Get-Date).ToString('dd/MM/yyyy HH:mm:ss')
 Log-Message "$($TimeStamp) - dataspace and rowcount collected"
 Log-Message "$($TimeStamp) - DataSpaceUsed: $($dataSpace)"
@@ -62,9 +58,9 @@ try {
                 # Truncate tabellen
                 Invoke-DbaQuery -SqlInstance $server -SqlCredential $mycredential -Database $database -Query "TRUNCATE TABLE $table" -ErrorAction Stop
                 # Send mail
-                $to = 'orjan.berg@exsitec.no'
-                $from = 'noreply@bbnett.no'
-                $subject = "Test: $table har vokst for mye"
+                $to = $config.MailReceiver
+                $from = $config.MailSender
+                $subject = "$($config.company): $table har vokst for mye"
                 $body = "Størrelsen på tabellen $table oversteg verdien 3 megabyte per rad.  
                 Rutinene for å redusere tabellen er kjørt."
                 # Send-MailMessage er ikke anbefalt brukt, men jeg har ikke funnet noe annet alternativ enda

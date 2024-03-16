@@ -1,0 +1,8 @@
+{
+    "server": "192.168.50.40",
+    "MailReceiver": "orjan.berg@exsitec.no",
+    "MailSender": "noreply@bbnett.no",
+    "Company": "Test",
+    "SmtpServer": "smtp.bbnett.no",
+    "SqlUser": "sa"
+}

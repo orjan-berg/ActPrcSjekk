@@ -19,7 +19,10 @@ function Load-Module ($n) {
 
 Load-Module 'dbatools'
 
+$instPath = Read-Host 'Enter installation path'
+
+
 # change $outfile path to reflect your path
-$outfile = 'E:\Data\GIT\ActPrcSjekk\config.dat'
+$outfile = "$instPath\config.dat"
 (Get-Credential).Password | ConvertFrom-SecureString | Out-File $outfile
 
